@@ -1,13 +1,33 @@
+import fs from "fs";
 
-export default async function handler({ query: {categoryId} }, res) {
-    const data = await fetch('https://www.alpha-orbital.com/last-100-news.json');
-    const articles = await data.json();
+export default async function handler(req, res) {
+    const searchTerm = req.query.search;
+    const deleteSlug = req.query.delete;
+    const categoryId = req.query.categoryId;
 
-    const singleArticle = articles.filter(art => art.post_category_id === categoryId);
-
-    if(singleArticle) {
-        res.status(200).json(singleArticle);
-    } else {
-        res.status(404).json({message: `Article with id: ${categoryId} is not found`});
-    }
+    await fs.readFile('./pages/api/articlesData.json', 'utf-8',async (err,jsonString) => {
+        if(err){
+            console.log(">>ERROR>>>",err)
+        } else {
+            const articles = JSON.parse(jsonString);
+            console.log(">>>SLUGG>>>",deleteSlug)
+            if(deleteSlug){
+                const filteredArticles = articles.filter(article => article.slug !== deleteSlug);
+                console.log(">>>>FilteredArticles>>>>",filteredArticles);
+                await fs.writeFile('./pages/api/articlesData.json', JSON.stringify(filteredArticles), err => {
+                    if(err) {
+                        console.log(">>ERROR>>",err);
+                    }
+                })
+                res.status(200).json(filteredArticles);
+            }
+            if(searchTerm) {
+                const filteredArticles = articles.filter(article => article.title.toUpperCase().includes(searchTerm.toUpperCase()));
+                res.status(200).json(filteredArticles)
+            } else {
+                const articlesByCategory = articles.filter(art => art.post_category_id === categoryId);
+                res.status(200).json(articlesByCategory);
+            }
+        }
+    });
 }
