@@ -1,14 +1,28 @@
 import Link from 'next/link'
 import articleStyle from '../styles/Article.module.css'
+import {useState} from "react";
 
-function ArticleItem({article}) {
+function ArticleItem({article, onDeleteArticle}) {
+    const [showDeleteButton, setShowDeleteButton] = useState(false);
+    const onHoverArticle = () => {
+        setShowDeleteButton(true);
+    }
+
     return (
-        <Link href="/article/[id]" as={`/article/${article.slug}`}>
-            <a className={articleStyle.card}>
-                <h3>{article.title}</h3>
-                <div dangerouslySetInnerHTML={{__html: article.excerpt}}/>
-            </a>
-        </Link>
+        <button
+            className={articleStyle.wrapper}
+            onMouseEnter={onHoverArticle}
+            onMouseLeave={() => setShowDeleteButton(false)}
+        >
+            {showDeleteButton && <div onClick={() => onDeleteArticle(article.slug)} className={articleStyle.deleteButton}>Delete</div>}
+                <a href={`https://www.alpha-orbital.com/news/${article.slug}`}>
+                    <h3 className={articleStyle.title}>{article.title}</h3>
+                    <img src={`https://www.alpha-orbital.com/assets/images/post_img/${article.post_image}`}
+                         className={articleStyle.image}
+                    />
+                    <div dangerouslySetInnerHTML={{__html: article.excerpt}}/>
+                </a>
+        </button>
     );
 }
 
