@@ -10,10 +10,8 @@ export default async function handler(req, res) {
             console.log(">>ERROR>>>",err)
         } else {
             const articles = JSON.parse(jsonString);
-            console.log(">>>SLUGG>>>",deleteSlug)
             if(deleteSlug){
                 const filteredArticles = articles.filter(article => article.slug !== deleteSlug);
-                console.log(">>>>FilteredArticles>>>>",filteredArticles);
                 await fs.writeFile('./pages/api/articlesData.json', JSON.stringify(filteredArticles), err => {
                     if(err) {
                         console.log(">>ERROR>>",err);
