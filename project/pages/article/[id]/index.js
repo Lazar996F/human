@@ -8,6 +8,7 @@ function article ({article}) {
         <>
             <h1>{article.title}</h1>
             <div dangerouslySetInnerHTML={{__html: article.excerpt}}/>
+            <img src={`https://www.alpha-orbital.com/assets/images/post_img/${article.post_image}`}/>
             <br/>
             <Link href='/'>Go Back</Link>
         </>
