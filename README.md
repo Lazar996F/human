@@ -1,4 +1,4 @@
-This is test app for [Human](https://www.humaninteraction.com/) company
+Learning next.js
 
 ## Getting Started
 ```bash
